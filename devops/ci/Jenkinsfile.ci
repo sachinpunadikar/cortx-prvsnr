@@ -117,7 +117,7 @@ Closure dynamicValidation = {
             }
             junit testResults: testReportFileNameXml, allowEmptyResults: true
         }
-        stage("Publish Cobertura coverage report") {
+        stage("Publish coverage report to codacy") {
             environment {
                 codacycred = credentials('codacy')
             }
