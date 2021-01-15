@@ -86,6 +86,7 @@ Closure dynamicValidation = {
     String testReportFileNameXml = "pytest.xml"
     String testReportFileNamePlain = "pytest.out.txt"
     String pytestArgs = "-l -vv --junit-xml=$testReportFileNameXml --env-provider docker"
+    String codeCoverageArgs = "--cover=test/ --cover-report xml"
     String pytestTargets = ""
     String pytestMarkers = "not cortx_bvt"
 
@@ -101,7 +102,7 @@ Closure dynamicValidation = {
             // run tests
             stage('Run tests') {
                 sh """
-                    pipenv run bash -x devops/ci/run_tests.sh "$pytestArgs $pytestTargets" "$pytestMarkers" "$testReportFileNamePlain"
+                    pipenv run bash -x devops/ci/run_tests.sh "$pytestArgs $pytestTargets" "$pytestMarkers" "$testReportFileNamePlain" "$codeCoverageArgs"
                 """
             }
         }
@@ -115,6 +116,12 @@ Closure dynamicValidation = {
                 archiveArtifacts artifacts: testReportFileNamePlain, allowEmptyArchive: true
             }
             junit testResults: testReportFileNameXml, allowEmptyResults: true
+        }
+        stage("Publish Cobertura coverage report") {
+            environment {
+                codacycred = credentials('codacy')
+            }
+            cobertura coberturaReportFile: 'coverage.xml', failNoReports: true
         }
     }
 }
