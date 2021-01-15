@@ -86,7 +86,7 @@ Closure dynamicValidation = {
     String testReportFileNameXml = "pytest.xml"
     String testReportFileNamePlain = "pytest.out.txt"
     String pytestArgs = "-l -vv --junit-xml=$testReportFileNameXml --env-provider docker"
-    String codeCoverageArgs = "--cover=test/ --cover-report xml"
+    String codeCoverageArgs = "--cov test/ --cov-report=xml"
     String pytestTargets = ""
     String pytestMarkers = "not cortx_bvt"
 
@@ -122,6 +122,7 @@ Closure dynamicValidation = {
                 codacycred = credentials('codacy')
             }
             cobertura coberturaReportFile: 'coverage.xml', failNoReports: true
+            sh "bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.xml --project-token $codacycred"
         }
     }
 }
