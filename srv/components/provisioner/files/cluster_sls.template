@@ -86,6 +86,7 @@ cluster:
     storage:
       {% for num in range(num_of_nodes) -%}
       enclosure_id: enclosure-{{ (num + 1) }}
+      metadata_seg: /dev/vg_metadata_srvnode-{{ (num + 1) }}/lv_raw_metadata
       {%- endfor %}
       metadata_devices:               # Device for /var/motr and possibly SWAP
         - /dev/sdb                    # Auto-populated by components.system.storage.multipath
